@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: tresor-app
+  name: tresor-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: tresor-app
+  template:
+    metadata:
+      labels:
+        app: tresor-app
+    spec:
+      containers:
+      - name: tresor-app
+        image: 949214307611.dkr.ecr.eu-west-3.amazonaws.com/my-docker-repo:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8083
+          name: http
+          protocol: TCP
+# service type loadbalancer       
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: tresor-app
+    k8s-app: tresor-app
+  name: tresor-app
+spec:
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 8083
+  type: LoadBalancer
+  selector:
+    app: tresor-app
