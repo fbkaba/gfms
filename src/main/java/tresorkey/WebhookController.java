@@ -107,7 +107,7 @@ public class WebhookController {
 		OkHttpClient client = new OkHttpClient().newBuilder()
 				  .build();
 		MediaType mediaType = MediaType.parse("application/json");
-		RequestBody	body = RequestBody.create(mediaType, "{\n  \"key\": 13,\n  \"callBackUrl\": \"https://webhook.site/108f10bb-8c7b-4af5-b81a-55707a665e23\"\n}");
+		RequestBody	body = RequestBody.create(mediaType, "{\n  \"key\": "+ sum +",\n  \"callBackUrl\": \"https://webhook.site/1edeb07b-2662-4c5d-abf2-e44cb77c09db\"\n}");
 		Request	request = new Request.Builder()
 				  .url("https://gfms-sandbox-monkeyisland.azurewebsites.net/key0729")
 				  .method("POST", body)
