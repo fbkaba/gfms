@@ -109,12 +109,6 @@ public class WebhookController {
 			log.error(e.getMessage());
 		}
 
-		try {
-			log.info("reponse recue " + response.body().string());
-		} catch (IOException e) {
-			log.error(e.getMessage());
-		}
-
 	}
 
 }
