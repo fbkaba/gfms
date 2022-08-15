@@ -25,117 +25,96 @@ import okhttp3.Response;
 public class WebhookController {
 
 	static Logger log = LoggerFactory.getLogger(WebhookController.class);
+
 	@GetMapping("kaba")
 	public String getKey() {
+
+		Logger log = LoggerFactory.getLogger(MonkeyIslandApiExample.class);
 		
-    	Logger log = LoggerFactory.getLogger(MonkeyIslandApiExample.class);
-    	int sumMagicNumbers =0;
-    	Response response = null;
-    	OkHttpClient client = new OkHttpClient().newBuilder().build();
-    			MediaType mediaType = MediaType.parse("text/plain");
-    			RequestBody body = RequestBody.create(mediaType, "");
-    			Request request = new Request.Builder()
-    			  .url("https://gfms-sandbox-monkeyisland.azurewebsites.net/key0729")
-    			  .method("GET", null)
-    			  .addHeader("Accept", "application/json")
-    			  .build();
-    			try {
-					response = client.newCall(request).execute();
-					String res = response.body().string();
-					log.info("Resultat : " + res);
-					JSONObject jobject = new JSONObject(res); 
-					JSONArray jArray = jobject.getJSONArray("magicNumbers");
-					log.info("jArray : " + jArray);
-					
-					 for (int i = 0; i < jArray.length(); i++) {
-						 log.info("jArray : " + jArray.getInt(i));
-						 sumMagicNumbers += jArray.getInt(i);
-					 }
-					 
-					 log.info("sumMagicNumbers : " + sumMagicNumbers);
-					
-				} catch (IOException e) {
-					
-					log.error(e.getMessage());
-					// TODO Auto-generated catch block
-					//e.printStackTrace();
-				} 	
-    	
-    			postDataForKey(sumMagicNumbers);
-
-    			
-		
-		return "Magic !";
-	}
-	
-	/*@PostMapping()
-	public String keysrawcontent() {
-		return "Greetings from Spring Boot!";
-	}*/
-	
-	@PostMapping()
-	String keyContentWebhook(HttpServletRequest httpServletRequest ) {
-		String content = getPostData(httpServletRequest);
-		log.info( "content  " + content);
-		return content;
-	  }
-	
-	
-	public static String getPostData(HttpServletRequest req) {
-	    StringBuilder sb = new StringBuilder();
-	    try {
-	        BufferedReader reader = req.getReader();
-	        reader.mark(10000);
-
-	        String line;
-	        do {
-	            line = reader.readLine();
-	            sb.append(line).append("\n");
-	        } while (line != null);
-	        reader.reset();
-	        // do NOT close the reader here, or you won't be able to get the post data twice
-	    } catch(IOException e) {
-	        log.warn("getPostData couldn't.. get the post data", e);  // This has happened if the request's reader is closed    
-	    }
-
-	    return sb.toString();
-	}
-	
-	public static void postDataForKey(int sum) {
-	  
+		int sumMagicNumbers = 0;
 		Response response = null;
-		OkHttpClient client = new OkHttpClient().newBuilder()
-				  .build();
-		MediaType mediaType = MediaType.parse("application/json");
-		RequestBody	body = RequestBody.create(mediaType, "{\n  \"key\": "+ sum +",\n  \"callBackUrl\": \"http://clbck.pariskryptokloud.com/gfms/key\"\n}");
-		Request	request = new Request.Builder()
-				  .url("https://gfms-sandbox-monkeyisland.azurewebsites.net/key0729")
-				  .method("POST", body)
-				  .addHeader("Content-Type", "application/json")
-				  .addHeader("Accept", "text/plain")
-				  .build();
-				try {
-					response = client.newCall(request).execute();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
-				try {
-					log.info( "reponse recue " + response.body().string());
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
-				
-				
-	
+		OkHttpClient client = new OkHttpClient().newBuilder().build();
+		Request request = new Request.Builder().url("https://gfms-sandbox-monkeyisland.azurewebsites.net/key0729")
+				.method("GET", null).addHeader("Accept", "application/json").build();
+		try {
+			response = client.newCall(request).execute();
+			String res = response.body().string();
+			log.info("Resultat : " + res);
+			JSONObject jobject = new JSONObject(res);
+			JSONArray jArray = jobject.getJSONArray("magicNumbers");
+			log.info("jArray : " + jArray);
+
+			for (int i = 0; i < jArray.length(); i++) {
+				log.info("jArray : " + jArray.getInt(i));
+				sumMagicNumbers += jArray.getInt(i);
+			}
+
+			log.info("sumMagicNumbers : " + sumMagicNumbers);
+
+		} catch (IOException e) {
+
+			log.error(e.getMessage());
+		}
+
+		postDataForKey(sumMagicNumbers);
+
+		return "Got Magic Numbers!";
 	}
-	
-	
-	
-	
-	
+
+	/*
+	 * @PostMapping() public String keyContentWebhook() { return
+	 * " key content from Partner api!"; }
+	 */
+
+	@PostMapping()
+	String keyContentWebhook(HttpServletRequest httpServletRequest) {
+		String content = getPostData(httpServletRequest);
+		log.info("content  " + content);
+		return content;
+	}
+
+	public static String getPostData(HttpServletRequest req) {
+		StringBuilder sb = new StringBuilder();
+		try {
+			BufferedReader reader = req.getReader();
+			reader.mark(10000);
+
+			String line;
+			do {
+				line = reader.readLine();
+				sb.append(line).append("\n");
+			} while (line != null);
+			reader.reset();
+		} catch (IOException e) {
+			log.warn("getPostData couldn't.. get the post data", e); 
+		}
+
+		return sb.toString();
+	}
+
+	public static void postDataForKey(int sum) {
+
+		Response response = null;
+		OkHttpClient client = new OkHttpClient().newBuilder().build();
+		MediaType mediaType = MediaType.parse("application/json");
+		@SuppressWarnings("deprecation")
+		RequestBody body = RequestBody.create(mediaType,
+				"{\n  \"key\": " + sum + ",\n  \"callBackUrl\": \"http://clbck.pariskryptokloud.com/gfms/key\"\n}");
+		Request request = new Request.Builder().url("https://gfms-sandbox-monkeyisland.azurewebsites.net/key0729")
+				.method("POST", body).addHeader("Content-Type", "application/json").addHeader("Accept", "text/plain")
+				.build();
+		try {
+			response = client.newCall(request).execute();
+		} catch (IOException e) {
+			log.error(e.getMessage());
+		}
+
+		try {
+			log.info("reponse recue " + response.body().string());
+		} catch (IOException e) {
+			log.error(e.getMessage());
+		}
+
+	}
 
 }
